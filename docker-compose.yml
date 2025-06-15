@@ -1,0 +1,35 @@
+version: '3.9'
+
+services:
+  healthcare-cms-core-web:
+    image: drupal:10-apache
+    container_name: healthcare-cms-core-web
+    ports:
+      - "6080:80"
+    volumes:
+      - ./web:/var/www/html
+    depends_on:
+      - healthcare-cms-db
+
+  healthcare-cms-db:
+    image: postgres:14
+    container_name: healthcare-cms-db
+    restart: always
+    environment:
+      POSTGRES_DB: drupal
+      POSTGRES_USER: drupal
+      POSTGRES_PASSWORD: drupal
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  healthcare-cms-adminer:
+    image: adminer
+    container_name: healthcare-cms-adminer
+    restart: always
+    ports:
+      - "8081:8080"
+    environment:
+      ADMINER_DEFAULT_SERVER: healthcare-cms-db
+
+volumes:
+  db_data:
